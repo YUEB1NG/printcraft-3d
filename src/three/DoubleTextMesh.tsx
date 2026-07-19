@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Text3D, Center, RoundedBox } from '@react-three/drei'
+import { Group } from 'three'
 import { getPhysicalTexture } from '../lib/texture'
 
 const FONT = '/fonts/helvetiker_bold.typeface.json'
@@ -29,12 +30,13 @@ function textMatProps(preset: string): Record<string, any> {
 }
 
 // 双面立体字：一块板，正面一组字、背面一组反向字（绕 Y 转 180° 让背面可读）。
-export default function DoubleTextMesh({ front, back, preset, onReady }: { front: string; back: string; preset: string; onReady?: () => void }) {
+export default function DoubleTextMesh({ front, back, preset, onReady }: { front: string; back: string; preset: string; onReady?: (g: Group) => void }) {
   const mat = matProps(preset) as any
   const textMat = textMatProps(preset) as any
-  useEffect(() => { onReady?.() }, [])
+  const ref = useRef<Group>(null)
+  useEffect(() => { if (ref.current) onReady?.(ref.current) }, [front, back, preset])
   return (
-    <group>
+    <group ref={ref}>
       <RoundedBox args={[PLATE_W, PLATE_H, PLATE_D]} radius={0.08} smoothness={4}>
         <meshStandardMaterial {...mat} />
       </RoundedBox>

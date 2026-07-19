@@ -8,6 +8,8 @@ import StudioShell, { SectionTitle, Field, inputStyle, primaryBtn, ghostBtn } fr
 import { ImageIcon, LightIcon } from './icons'
 import Slider from '../ui/Slider'
 import { sampleImage, type ReliefField } from '../lib/relief'
+import { buildLithophaneSolid } from '../lib/solid'
+import { downloadSTL } from '../lib/stl'
 import { springEnter } from '../lib/springs'
 
 // 浮光产品尺寸：10.8cm × 14.4cm ≈ 3:4 竖版
@@ -88,6 +90,12 @@ export default function ReliefStudio() {
     setSent(true)
   }
 
+  function downloadRelief() {
+    if (!relief) return
+    const geo = buildLithophaneSolid(relief, { depth: p.depth, contrast: p.contrast, base: p.base, widthCm: 10.8 })
+    downloadSTL(geo, '悦饼-浮光.stl')
+  }
+
   const stage = (
     <Stage
       backlight={lit ? light * 5 : 0}
@@ -148,9 +156,14 @@ export default function ReliefStudio() {
           )}
           {error && <div style={{ color: '#ff9a9a', fontSize: 13, margin: '4px 0 12px' }}>{error}</div>}
           {relief && (
-            <motion.button whileTap={{ scale: 0.96 }} transition={springEnter} onClick={() => fileRef.current?.click()} style={{ ...ghostBtn, marginBottom: 4 }} disabled={busy}>
-              {busy ? '解析中…' : '更换照片'}
-            </motion.button>
+            <>
+              <motion.button whileTap={{ scale: 0.96 }} transition={springEnter} onClick={() => fileRef.current?.click()} style={{ ...ghostBtn, marginBottom: 8 }} disabled={busy}>
+                {busy ? '解析中…' : '更换照片'}
+              </motion.button>
+              <motion.button whileTap={{ scale: 0.97 }} transition={springEnter} onClick={downloadRelief} style={{ ...primaryBtn, marginBottom: 4 }}>
+                下载 STL（可打印）
+              </motion.button>
+            </>
           )}
           <div style={{ color: 'var(--text-faint)', fontSize: 12, marginTop: 6, lineHeight: 1.5 }}>
             默认纯白浮雕，点「开灯」即可背光显示彩色透光画。

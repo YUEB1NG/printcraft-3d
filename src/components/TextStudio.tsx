@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'react-router-dom'
 import Stage from '../three/Stage'
 import DoubleTextMesh from '../three/DoubleTextMesh'
 import StudioShell, { SectionTitle, Field, inputStyle, primaryBtn, ghostBtn, matChip, matChipActive } from './StudioShell'
+import { downloadSTL } from '../lib/stl'
+import { Group } from 'three'
 import { springEnter } from '../lib/springs'
 
 const PRESETS = [
@@ -22,6 +24,7 @@ export default function TextStudio() {
   const [copied, setCopied] = useState(false)
   const [ready, setReady] = useState(false)
   const [params] = useSearchParams()
+  const modelRef = useRef<Group | null>(null)
 
   useEffect(() => {
     const f = params.get('f'), b = params.get('b'), m = params.get('m')
@@ -55,6 +58,18 @@ export default function TextStudio() {
     setSent(true)
   }
 
+  // 字变长度约 15cm：场景平面宽 5.0 → 缩放 3.0 即真实厘米尺寸
+  function downloadText() {
+    const g = modelRef.current
+    if (!g) return
+    const clone = g.clone()
+    clone.rotation.set(0, 0, 0)
+    clone.position.set(0, 0, 0)
+    clone.scale.setScalar(3.0)
+    clone.updateWorldMatrix(true, true)
+    downloadSTL(clone, '悦饼-字变.stl')
+  }
+
   return (
     <StudioShell
       showHint={!ready}
@@ -68,7 +83,7 @@ export default function TextStudio() {
             ambient={0.55}
             keyLight={0.95}
           >
-            <DoubleTextMesh front={front} back={back} preset={preset} onReady={() => setReady(true)} />
+            <DoubleTextMesh front={front} back={back} preset={preset} onReady={(g) => { modelRef.current = g; setReady(true) }} />
           </Stage>
           {!ready && <div className="stage-loading">模型加载中…</div>}
           {ready && (
@@ -103,6 +118,9 @@ export default function TextStudio() {
           <div style={{ color: 'var(--text-faint)', fontSize: 12, marginTop: 2, lineHeight: 1.5 }}>
             白色实体，带实物质感；左右拖动手感灵敏，上下轻微。
           </div>
+          <motion.button whileTap={{ scale: 0.97 }} transition={springEnter} onClick={downloadText} style={{ ...primaryBtn, marginTop: 12 }}>
+            下载 STL（可打印）
+          </motion.button>
 
           <div style={{ height: 1, background: 'var(--border)', margin: '22px 0' }} />
           <SectionTitle>留资 / 分享</SectionTitle>
