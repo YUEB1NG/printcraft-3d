@@ -1,0 +1,109 @@
+:root {
+  /* ---- Apple 风格设计 token ---- */
+  --bg: #0a0a0c;
+  --bg-2: #111114;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-strong: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-bright: rgba(255, 255, 255, 0.28);
+  --text: #f5f5f7;
+  --text-dim: rgba(245, 245, 247, 0.62);
+  --text-faint: rgba(245, 245, 247, 0.38);
+  --accent: #6ea8ff;
+  --accent-2: #b388ff;
+  --radius-l: 28px;
+  --radius-m: 18px;
+  --radius-s: 12px;
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.55);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+body {
+  background:
+    radial-gradient(1200px 800px at 50% -10%, rgba(110, 168, 255, 0.10), transparent 60%),
+    radial-gradient(900px 700px at 100% 0%, rgba(179, 136, 255, 0.08), transparent 55%),
+    var(--bg);
+}
+
+button { font-family: inherit; color: inherit; cursor: pointer; }
+input, textarea { font-family: inherit; }
+
+::selection { background: rgba(110, 168, 255, 0.3); }
+
+/* 大标题：尺寸越大，字距越紧（Apple 排版规则） */
+.display {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+.eyebrow {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+.subtitle { color: var(--text-dim); font-size: 1.05rem; line-height: 1.5; }
+
+/* 通用毛玻璃面板 */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--bg-2); backdrop-filter: none; }
+}
+
+/* 工作室：左侧 3D 舞台 + 右侧毛玻璃参数面板 */
+.studio { display: flex; height: 100dvh; width: 100%; }
+.studio-stage { position: relative; flex: 1; min-width: 0; }
+/* 舞台暗角，让 3D 主体更突出、画面更有质感 */
+.studio-stage::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(62% 62% at 50% 46%, transparent 38%, rgba(0,0,0,0.5) 100%);
+}
+.drag-hint {
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  font-size: 12px; color: var(--text-dim); padding: 7px 14px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(20px);
+  pointer-events: none; white-space: nowrap;
+}
+.stage-loading {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+.studio-panel {
+  width: 340px; flex: none; padding: 84px 20px 28px;
+  overflow-y: auto; border-left: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+.studio-panel input:focus, .studio-panel textarea:focus { border-color: var(--border-bright); }
+
+input[type="range"] { height: 28px; cursor: pointer; }
+
+@media (max-width: 820px) {
+  .studio { flex-direction: column; height: auto; min-height: 100dvh; }
+  .studio-stage { height: 56dvh; }
+  .studio-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); padding: 22px 18px 40px; }
+}

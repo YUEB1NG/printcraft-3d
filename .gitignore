@@ -1,0 +1,10 @@
+node_modules
+dist
+screenshots
+sample.jpg
+probe.mjs
+probe2.mjs
+screenshot.mjs
+*.log
+.DS_Store
+core.*
