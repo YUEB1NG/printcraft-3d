@@ -21,13 +21,31 @@ npm run dev      # 打开终端里的 http://localhost:5173
 
 交互遵循 Apple《Designing Fluid Interfaces》：拖拽 1:1 跟手、松手带惯性、按压即时回弹，并尊重 `prefers-reduced-motion`。
 
-## 部署到 Vercel（给朋友发链接）
+## 部署（已上线：GitHub Pages）
 
-1. 把本目录推到 GitHub。
-2. 在 [vercel.com](https://vercel.com) 用 GitHub 导入仓库，框架选 **Vite**，其余默认。
-3. 部署完得到一个链接，直接发朋友。
+**线上地址：** https://yueb1ng.github.io/printcraft-3d/
 
-> 用的是 HashRouter（`#/relief` 这种地址），纯静态托管即可，无需服务端路由配置。
+本仓库用 **GitHub Pages** 托管，纯静态、免费、公网可访问。用的是 HashRouter（`#/relief` 这种地址），无需服务端路由。
+
+### 怎么更新上线（改完代码后）
+```bash
+npm run build                 # 重新生成 dist/
+git checkout -B gh-pages         # 切到部署分支
+git rm -rf --cached . >/dev/null 2>&1 || true
+rm -rf $(git ls-files --others --exclude-standard) 2>/dev/null || true
+cp -r dist/. . && touch .nojekyll
+git add -A && git commit -m "deploy: <改了啥>"
+git push -u origin gh-pages
+git checkout main                 # 切回源码分支
+```
+推送后 GitHub Pages 自动重新发布，等 ~30 秒即可在线上地址看到更新。
+
+### 想换 Vercel / 其他平台
+- 把源码推到任意 Git 仓库（`npm run build` 产物在 `dist/`，`vite.config.ts` 里已设 `base: './'` 适配子路径）。
+- Vercel 导入仓库时框架选 **Vite**，Output Directory 填 `dist`，其余默认。
+- 若要根路径部署（如自有域名），把 `vite.config.ts` 的 `base` 改回 `'/'` 即可。
+
+> 注意：本目录的 `dist/`、`node_modules/`、`screenshots/`、`*.mjs` 探针脚本均已 gitignore，不会进仓库。
 
 ## 数据说明（v1 留资）
 
