@@ -2,6 +2,7 @@ node_modules
 dist
 screenshots
 sample.jpg
+.screenshot/
 probe.mjs
 probe2.mjs
 screenshot.mjs

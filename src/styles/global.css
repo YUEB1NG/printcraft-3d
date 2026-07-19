@@ -11,6 +11,8 @@
   --text-faint: rgba(245, 245, 247, 0.38);
   --accent: #6ea8ff;
   --accent-2: #b388ff;
+  --light: #ffcf6b;
+  --light-soft: rgba(255, 207, 107, 0.16);
   --radius-l: 28px;
   --radius-m: 18px;
   --radius-s: 12px;
@@ -101,6 +103,61 @@ input, textarea { font-family: inherit; }
 .studio-panel input:focus, .studio-panel textarea:focus { border-color: var(--border-bright); }
 
 input[type="range"] { height: 28px; cursor: pointer; }
+
+/* ---- 顶部导航（悦饼 品牌 + 浮光/字变 标签） ---- */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  background: rgba(10, 10, 12, 0.55);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+.nav-logo {
+  width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center;
+  font-weight: 700; font-size: 16px; color: #0a0a0c;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.nav-name { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+.nav-tag { font-size: 12px; color: var(--text-faint); }
+.nav-tabs {
+  display: flex; gap: 4px; padding: 4px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.nav-tab {
+  position: relative; border: none; background: transparent;
+  padding: 7px 18px; border-radius: 999px; font-size: 14px; font-weight: 600;
+}
+.nav-pill {
+  position: absolute; inset: 0; border-radius: 999px;
+  background: var(--surface-strong); border: 1px solid var(--border-bright);
+}
+
+/* ---- 舞台底部控制条（开灯按钮 + 尺寸标注） ---- */
+.stage-controls {
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px; z-index: 5;
+}
+.light-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 700;
+  border: 1px solid var(--border); color: var(--text-dim);
+  background: var(--surface); backdrop-filter: blur(20px);
+  transition: color 220ms var(--ease-spring), border-color 220ms var(--ease-spring), background 220ms var(--ease-spring);
+}
+.light-toggle.on {
+  color: #2a1c00; border-color: transparent;
+  background: linear-gradient(135deg, #ffe2a0, var(--light));
+  box-shadow: 0 8px 24px rgba(255, 207, 107, 0.35);
+}
+.stage-size {
+  font-size: 12px; color: var(--text-dim);
+  padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(20px);
+  white-space: nowrap;
+}
 
 @media (max-width: 820px) {
   .studio { flex-direction: column; height: auto; min-height: 100dvh; }

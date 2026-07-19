@@ -8,15 +8,15 @@ import StudioShell, { SectionTitle, Field, inputStyle, primaryBtn, ghostBtn, mat
 import { springEnter } from '../lib/springs'
 
 const PRESETS = [
-  { key: 'glow', label: '透光树脂' },
-  { key: 'matte', label: '哑光' },
-  { key: 'metal', label: '金属' },
+  { key: 'matte', label: '哑光白' },
+  { key: 'pearl', label: '珠光白' },
+  { key: 'glow', label: '透光白' },
 ]
 
 export default function TextStudio() {
   const [front, setFront] = useState('HELLO')
   const [back, setBack] = useState('WORLD')
-  const [preset, setPreset] = useState('glow')
+  const [preset, setPreset] = useState('pearl')
   const [lead, setLead] = useState({ name: '', contact: '', note: '' })
   const [sent, setSent] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -35,7 +35,7 @@ export default function TextStudio() {
 
   function copyLink() {
     const q = new URLSearchParams({ f: front, b: back, m: preset })
-    const link = `${location.origin}${location.pathname}#/text?${q.toString()}`
+    const link = `${location.origin}${location.pathname}#/zibian?${q.toString()}`
     const clip = navigator.clipboard
     if (clip) {
       clip.writeText(link)
@@ -50,17 +50,32 @@ export default function TextStudio() {
     e.preventDefault()
     if (!lead.contact.trim()) return
     const all = JSON.parse(localStorage.getItem('printcraft_leads') || '[]')
-    all.push({ type: 'text', front, back, preset, ...lead, at: Date.now() })
+    all.push({ type: 'zibian', front, back, preset, ...lead, at: Date.now() })
     localStorage.setItem('printcraft_leads', JSON.stringify(all))
     setSent(true)
   }
 
   return (
     <StudioShell
+      showHint={!ready}
       stage={
         <>
-          <Stage><DoubleTextMesh front={front} back={back} preset={preset} onReady={() => setReady(true)} /></Stage>
+          <Stage
+            // 字变：左右滑动灵敏、上下轻微
+            hFactor={0.015}
+            vFactor={0.0035}
+            vClamp={0.34}
+            ambient={0.55}
+            keyLight={0.95}
+          >
+            <DoubleTextMesh front={front} back={back} preset={preset} onReady={() => setReady(true)} />
+          </Stage>
           {!ready && <div className="stage-loading">模型加载中…</div>}
+          {ready && (
+            <div className="stage-controls">
+              <span className="stage-size">字变 · 长约 15 cm</span>
+            </div>
+          )}
         </>
       }
       panel={
@@ -84,6 +99,9 @@ export default function TextStudio() {
                 {p.label}
               </motion.button>
             ))}
+          </div>
+          <div style={{ color: 'var(--text-faint)', fontSize: 12, marginTop: 2, lineHeight: 1.5 }}>
+            白色实体，带实物质感；左右拖动手感灵敏，上下轻微。
           </div>
 
           <div style={{ height: 1, background: 'var(--border)', margin: '22px 0' }} />

@@ -3,14 +3,15 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { springEnter } from '../lib/springs'
 
-export default function StudioShell({ stage, panel }: { stage: ReactNode; panel: ReactNode }) {
+export default function StudioShell({ stage, panel, showHint = true }: { stage: ReactNode; panel: ReactNode; showHint?: boolean }) {
   const [hinted, setHinted] = useState(false)
+  const shouldShowHint = showHint && !hinted
   return (
     <div className="studio">
       <div className="studio-stage" onPointerDown={() => setHinted(true)}>
         {stage}
         <AnimatePresence>
-          {!hinted && (
+          {shouldShowHint && (
             <motion.div
               key="hint"
               className="drag-hint"
